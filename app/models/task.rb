@@ -21,7 +21,7 @@ class Task < ApplicationRecord
     end
 
     event :ready do
-      transition :in_code_review = :ready_for_release
+      transition :in_code_review => :ready_for_release
     end
 
     event :release do
