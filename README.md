@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/greybutton/task_manager.svg?branch=develop)](https://travis-ci.org/greybutton/task_manager)
+[![Coverage Status](https://coveralls.io/repos/github/greybutton/task_manager/badge.svg?branch=develop)](https://coveralls.io/github/greybutton/task_manager?branch=develop)
 
 # README
 
