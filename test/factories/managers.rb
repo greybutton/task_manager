@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :manager do
-    first_name { generate :string }
-    last_name { generate :string }
-    password { generate :string }
-    email { generate :email }
+    first_name
+    last_name
+    password
+    email
   end
 end

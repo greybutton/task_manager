@@ -1,10 +1,9 @@
 FactoryBot.define do
   factory :task do
-    name { "MyString" }
-    description { "MyText" }
-    author_id { 1 }
-    assignee_id { 1 }
-    state { "MyString" }
-    expired_at { "2019-03-22" }
+    name
+    description
+    author_id { create(:manager).id }
+    assignee_id { create(:developer).id }
+    state { generate :task_state }
   end
 end
