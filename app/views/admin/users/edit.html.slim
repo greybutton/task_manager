@@ -3,11 +3,7 @@
     .col-lg-1
       = f.button :submit, "Back", formaction: admin_users_url, formmethod: "get"
     .col-lg-11
-      h4 Create new user
+      h4 Edit user
   p
-  = f.input :first_name
-  = f.input :last_name
-  = f.input :email
-  = f.input :password
-  = f.input :type, as: :select, collection: ['Admin', 'Manager', 'Developer']
+  = render 'form', f: f
   = f.button :submit, "Confirm"
