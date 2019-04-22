@@ -1,0 +1,9 @@
+= simple_form_for [:admin, @user], as: :user, url: admin_user_url do |f|
+  .row
+    .col-lg-1
+      = f.button :submit, "Back", formaction: admin_users_url, formmethod: "get"
+    .col-lg-11
+      h4 Edit user
+  p
+  = render 'form', f: f
+  = f.button :submit, "Confirm"
