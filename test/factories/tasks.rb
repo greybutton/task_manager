@@ -4,6 +4,6 @@ FactoryBot.define do
     description
     author_id { create(:manager).id }
     assignee_id { create(:developer).id }
-    state { generate :task_state }
+    # state { generate :task_state }
   end
 end
