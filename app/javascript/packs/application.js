@@ -7,4 +7,7 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-console.log("Hello World from Webpacker");
+import WebpackerReact from "webpacker-react";
+import TaskBoard from "./components/TaskBoard";
+
+WebpackerReact.setup({ TaskBoard });
