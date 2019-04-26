@@ -1,7 +1,9 @@
 import React from "react";
 import Board from "react-trello";
+import { Button } from "react-bootstrap";
 
 import LaneHeader from "./LaneHeader";
+import AddPopup from "./AddPopup";
 
 import { fetch } from "../utils/fetch";
 
@@ -15,14 +17,24 @@ export default class TaskBoard extends React.Component {
       ready_for_release: null,
       released: null,
       archived: null
-    }
+    },
+    addPopupShow: false
+  };
+
+  stateEvents = {
+    in_development: "develop",
+    in_qa: "qa",
+    in_code_review: "code_review",
+    ready_for_release: "ready",
+    released: "release",
+    archived: "archive"
   };
 
   componentDidMount() {
     this.loadLines();
   }
 
-  onLaneScroll(requestedPage, state) {
+  onLaneScroll = (requestedPage, state) => {
     return this.fetchLine(state, requestedPage).then(({ items }) =>
       items.map(task => ({
         ...task,
@@ -30,9 +42,9 @@ export default class TaskBoard extends React.Component {
         title: task.name
       }))
     );
-  }
+  };
 
-  getBoard() {
+  getBoard = () => {
     return {
       lanes: [
         this.generateLane("new_task", "New"),
@@ -44,7 +56,7 @@ export default class TaskBoard extends React.Component {
         this.generateLane("archived", "Archived")
       ]
     };
-  }
+  };
 
   fetchLine = (state, page = 1) => {
     return fetch(
@@ -60,7 +72,7 @@ export default class TaskBoard extends React.Component {
     });
   };
 
-  loadLines() {
+  loadLines = () => {
     this.loadLine("new_task");
     this.loadLine("in_development");
     this.loadLine("in_qa");
@@ -68,9 +80,9 @@ export default class TaskBoard extends React.Component {
     this.loadLine("ready_for_release");
     this.loadLine("released");
     this.loadLine("archived");
-  }
+  };
 
-  loadLine(state, page = 1) {
+  loadLine = (state, page = 1) => {
     this.fetchLine(state, page).then(data => {
       this.setState(prevState => ({
         ...prevState,
@@ -80,7 +92,27 @@ export default class TaskBoard extends React.Component {
         }
       }));
     });
-  }
+  };
+
+  handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
+    fetch("PUT", window.Routes.api_v1_task_path(cardId, { format: "json" }), {
+      task: { state_event: this.stateEvents[targetLaneId] }
+    }).then(() => {
+      this.loadLine(sourceLaneId);
+      this.loadLine(targetLaneId);
+    });
+  };
+
+  handleAddShow = () => {
+    this.setState({ addPopupShow: true });
+  };
+
+  handleAddClose = (added = false) => {
+    this.setState({ addPopupShow: false });
+    if (added) {
+      this.loadLine("new_task");
+    }
+  };
 
   generateLane(id, title) {
     const { board } = this.state;
@@ -99,19 +131,13 @@ export default class TaskBoard extends React.Component {
     };
   }
 
-  handleDragEnd(cardId, sourceLaneId, targetLaneId) {
-    fetch("PUT", window.Routes.api_v1_task_path(cardId, { format: "json" }), {
-      task: { state: targetLaneId }
-    }).then(() => {
-      this.loadLine(sourceLaneId);
-      this.loadLine(targetLaneId);
-    });
-  }
-
   render() {
     return (
       <div>
         <h1>Your tasks</h1>
+        <Button bsStyle="primary" onClick={this.handleAddShow}>
+          Create new task
+        </Button>
         <Board
           data={this.getBoard()}
           onLaneScroll={this.onLaneScroll}
@@ -120,6 +146,10 @@ export default class TaskBoard extends React.Component {
           draggable
           laneDraggable={false}
           handleDragEnd={this.handleDragEnd}
+        />
+        <AddPopup
+          show={this.state.addPopupShow}
+          onClose={this.handleAddClose}
         />
       </div>
     );
