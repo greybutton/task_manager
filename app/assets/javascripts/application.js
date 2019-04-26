@@ -18,6 +18,8 @@
 //= require jquery_ujs
 //= require twitter/bootstrap
 
-$(function(){
+//= require js-routes
+
+$(function() {
   /* Your JavaScript goes here... */
 });
