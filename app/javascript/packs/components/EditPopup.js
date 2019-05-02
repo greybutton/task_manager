@@ -7,6 +7,7 @@ import {
   FormControl
 } from "react-bootstrap";
 
+import LoadingPopup from "./LoadingPopup";
 import { fetch } from "../utils/fetch";
 
 export default class EditPopup extends React.Component {
@@ -63,64 +64,54 @@ export default class EditPopup extends React.Component {
     }));
   };
 
-  handleCardDelete = () => {
+  handleResponse = (response, message) => {
     const { task } = this.state;
-    const { cardId, onClose } = this.props;
+    const { onClose } = this.props;
     const { state } = task;
+    if (response.statusText === "OK") {
+      onClose(state);
+    } else {
+      alert(`${message} ${response.status} - ${response.statusText}`);
+    }
+  };
+
+  handleCardDelete = () => {
+    const { cardId } = this.props;
     fetch(
       "DELETE",
       window.Routes.api_v1_task_path(cardId, { format: "json" })
-    ).then(response => {
-      if (response.statusText === "OK") {
-        onClose(state);
-      } else {
-        alert(`DELETE failed! ${response.status} - ${response.statusText}`);
-      }
-    });
+    ).then(response => this.handleResponse(response, "DELETE failed!"));
   };
 
   handleCardEdit = () => {
     const { task } = this.state;
-    const { cardId, onClose } = this.props;
-    const { name, description, state, author, assignee } = task;
+    const { cardId } = this.props;
+    const { name, description, state, author } = task;
     fetch("PUT", window.Routes.api_v1_task_path(cardId, { format: "json" }), {
       name,
       description,
       author_id: author.id,
-      // assignee_id: assignee.id,
       state
-    }).then(response => {
-      if (response.statusText === "OK") {
-        onClose(state);
-      } else {
-        alert(`Update failed! ${response.status} - ${response.statusText}`);
-      }
-    });
+    }).then(response => this.handleResponse(response, "Update failed!"));
   };
 
   render() {
     const { isLoading, task } = this.state;
     const { show, onClose } = this.props;
     if (isLoading) {
-      return (
-        <Modal show={show} onHide={onClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Info</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Your task is loading. Please be patient.</Modal.Body>
-          <Modal.Footer>
-            <Button onClick={onClose}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-      );
+      return <LoadingPopup show={show} onClose={onClose} />;
     }
     return (
       <div>
         <Modal show={show} onHide={onClose}>
           <Modal.Header closeButton>
             <Modal.Title>
-              {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
-              Task # {task.id} [{task.state}]
+              {/* eslint-disable-next-line prettier/prettier */}
+              Task # 
+              {task.id}
+              [
+              {task.state}
+              ]
             </Modal.Title>
           </Modal.Header>
 
