@@ -1,12 +1,8 @@
 import React from "react";
-import {
-  Modal,
-  Button,
-  FormGroup,
-  ControlLabel,
-  FormControl
-} from "react-bootstrap";
+import { Modal, Button, FormControl } from "react-bootstrap";
 
+import FormField from "./FormField";
+import UserSelect from "./UserSelect";
 import { fetch } from "../utils/fetch";
 
 export default class AddPopup extends React.Component {
@@ -47,8 +43,12 @@ export default class AddPopup extends React.Component {
     });
   };
 
+  handleAssigneeChange = value => {
+    this.setState({ assignee: value });
+  };
+
   render() {
-    const { name, description } = this.state;
+    const { name, description, assignee } = this.state;
     const { show, onClose } = this.props;
     return (
       <div>
@@ -59,24 +59,32 @@ export default class AddPopup extends React.Component {
 
           <Modal.Body>
             <form>
-              <FormGroup controlId="formTaskName">
-                <ControlLabel>Task name:</ControlLabel>
+              <FormField controlId="formTaskName" controlLabel="Task name:">
                 <FormControl
                   type="text"
                   value={name}
                   placeholder="Set the name for the task"
                   onChange={this.handleNameChange}
                 />
-              </FormGroup>
-              <FormGroup controlId="formTaskDescription">
-                <ControlLabel>Task description:</ControlLabel>
+              </FormField>
+              <FormField
+                controlId="formDescriptionName"
+                controlLabel="Task description:"
+              >
                 <FormControl
                   componentClass="textarea"
                   value={description}
                   placeholder="Set the description for the task"
                   onChange={this.handleDescriptionChange}
                 />
-              </FormGroup>
+              </FormField>
+              <FormField controlId="formAssignee" controlLabel="Assignee:">
+                <UserSelect
+                  id="Assignee"
+                  onChange={this.handleAssigneeChange}
+                  value={assignee}
+                />
+              </FormField>
             </form>
           </Modal.Body>
 
