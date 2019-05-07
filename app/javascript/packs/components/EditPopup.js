@@ -8,6 +8,7 @@ import {
 } from "react-bootstrap";
 
 import LoadingPopup from "./LoadingPopup";
+import UserSelect from "./UserSelect";
 import { fetch } from "../utils/fetch";
 
 export default class EditPopup extends React.Component {
@@ -86,13 +87,26 @@ export default class EditPopup extends React.Component {
   handleCardEdit = () => {
     const { task } = this.state;
     const { cardId } = this.props;
-    const { name, description, state, author } = task;
+    const { name, description, state, author, assignee } = task;
     fetch("PUT", window.Routes.api_v1_task_path(cardId, { format: "json" }), {
       name,
       description,
       author_id: author.id,
+      assignee_id: assignee.id,
       state
     }).then(response => this.handleResponse(response, "Update failed!"));
+  };
+
+  handleAuthorChange = value => {
+    this.setState(prevState => ({
+      task: { ...prevState.task, author: value }
+    }));
+  };
+
+  handleAssigneeChange = value => {
+    this.setState(prevState => ({
+      task: { ...prevState.task, assignee: value }
+    }));
   };
 
   render() {
@@ -135,9 +149,26 @@ export default class EditPopup extends React.Component {
                   onChange={this.handleDescriptionChange}
                 />
               </FormGroup>
+              <FormGroup controlId="formDescriptionName">
+                <ControlLabel>Author:</ControlLabel>
+                <UserSelect
+                  id="Author"
+                  isDisabled="true"
+                  value={task.author}
+                  onChange={this.handleAuthorChange}
+                />
+              </FormGroup>
+              <FormGroup controlId="formDescriptionName">
+                <ControlLabel>Assignee:</ControlLabel>
+                <UserSelect
+                  id="Assignee"
+                  onChange={this.handleAssigneeChange}
+                  value={task.assignee}
+                />
+              </FormGroup>
             </form>
             {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
-            Author: {task.author.first_name} {task.author.last_name}
+            {/* Author: {task.author.first_name} {task.author.last_name} */}
           </Modal.Body>
 
           <Modal.Footer>

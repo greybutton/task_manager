@@ -7,6 +7,7 @@ import {
   FormControl
 } from "react-bootstrap";
 
+import UserSelect from "./UserSelect";
 import { fetch } from "../utils/fetch";
 
 export default class AddPopup extends React.Component {
@@ -47,8 +48,12 @@ export default class AddPopup extends React.Component {
     });
   };
 
+  handleAssigneeChange = value => {
+    this.setState({ assignee: value });
+  };
+
   render() {
-    const { name, description } = this.state;
+    const { name, description, assignee } = this.state;
     const { show, onClose } = this.props;
     return (
       <div>
@@ -75,6 +80,14 @@ export default class AddPopup extends React.Component {
                   value={description}
                   placeholder="Set the description for the task"
                   onChange={this.handleDescriptionChange}
+                />
+              </FormGroup>
+              <FormGroup controlId="formTaskDescription">
+                <ControlLabel>Assignee:</ControlLabel>
+                <UserSelect
+                  id="Assignee"
+                  onChange={this.handleAssigneeChange}
+                  value={assignee}
                 />
               </FormGroup>
             </form>
